@@ -1,0 +1,1 @@
+cmd_/home/hejr/test/netfilter/netlink/netlink.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -z noexecstack   --build-id  -T ./scripts/module-common.lds -o /home/hejr/test/netfilter/netlink/netlink.ko /home/hejr/test/netfilter/netlink/netlink.o /home/hejr/test/netfilter/netlink/netlink.mod.o;  true

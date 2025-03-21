@@ -1,0 +1,1 @@
+cmd_/home/hejr/test/netfilter/netlink/netlink.o := ld -m elf_x86_64  -z max-page-size=0x200000 -z noexecstack     -r -o /home/hejr/test/netfilter/netlink/netlink.o /home/hejr/test/netfilter/netlink/main.o /home/hejr/test/netfilter/netlink/utils.o

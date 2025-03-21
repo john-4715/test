@@ -1,0 +1,1 @@
+cmd_/home/hejr/test/netfileter/test1/capture.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -z noexecstack   --build-id  -T ./scripts/module-common.lds -o /home/hejr/test/netfileter/test1/capture.ko /home/hejr/test/netfileter/test1/capture.o /home/hejr/test/netfileter/test1/capture.mod.o;  true

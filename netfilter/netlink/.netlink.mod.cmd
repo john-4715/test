@@ -1,0 +1,1 @@
+cmd_/home/hejr/test/netfilter/netlink/netlink.mod := { echo  /home/hejr/test/netfilter/netlink/main.o /home/hejr/test/netfilter/netlink/utils.o;  echo; } > /home/hejr/test/netfilter/netlink/netlink.mod
