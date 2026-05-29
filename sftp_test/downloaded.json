@@ -1,0 +1,347 @@
+[
+	{
+		"method": "LoginRequest",
+		"template": "{\"userName\": \"user\", \"passwordHash\": \"\", \"objType\": \"\", \"version\": \"2\", \"messageHash\": \"\", \"salt\": \"\" }",
+		"version": "2"
+	},
+	{
+		"method": "AddApplicationRequest",
+		"template": "{\"*applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"instanceCount\":\"\",\"name\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ApplyFirmwareRequest",
+		"template": "{\"objType\":\"\",\"crc\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "CommandAdvisoriesRequest",
+		"template": "{\"commandTypeId\":\"\",\"alarmIds\":[\"\"],\"unitNumber\":1,\"deviceType\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "CreateFWTransferLockRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "DeleteApplicationRequest",
+		"template": "{\"locator\":{\"applicationHash\":\"\",\"*applicationName\":\"\",\"*applicationTypeHash\":\"\",\"*applicationTypeName\":\"\",\"*deviceId\":\"\",\"*objType\":\"\"},\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "DeleteFileRequest",
+		"template": "{\"fileId\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ExecuteCommandRequest",
+		"template": "{\"arguments\":[\"\"],\"command\":\"\",\"locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"*applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"*deviceId\":\"\",\"*objType\":\"\"},\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetAlarmListForUnitRequest",
+		"template": "{\"*startDateTime\":\"\",\"*endDateTime\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetAppTypesRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "GetApplicationConfigurationRequest",
+		"template": "{\"locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"objType\":\"\"},\"objType\":\"\",\"sid\":\"\",\"version\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "GetApplicationConfigurationRequest",
+		"template": "{ \"locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"objType\":\"\"},\"objType\":\"\",\"sid\":\"\",\"version\":\"\"}",
+		"version": "4"
+	},
+	{
+		"method": "GetApplicationsRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetBackupRequest",
+		"template": "{\"*locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"deviceId\":\"\",\"*opt\":0,\"objType\":\"\",\"pointHash\":\"\",\"pointName\":\"\"},\"maxPartSize\":0,\"objType\":\"\",\"version\":\"\",\"*partId\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetCommandsRequest",
+		"template": "{\"locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"*applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"*deviceId\":\"\",\"*objType\":\"Locator\",\"*pointHash\":\"\",\"*pointName\":\"\"},\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetCommissionInfoRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetDevicesRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetDevicesPeerRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetFileRequest",
+		"template": "{\"fileId\":\"\",\"transferPartId\":\"\",\"*lastMessageHash\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetFileListRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetLogsRequest",
+		"template": "{\"objType\":\"\",\"version\":\"3\",\"lgiid\":\"\",\"appiid\":\"\",\"pntid\":\"\",\"offset\":\"\",\"number\":\"\",\"sid\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "GetMessageVersionsRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetNetworkStatusRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetPointValuesRequest",
+		"template": "{\"bLightWeightReq\":true,\"locatorCriteria\":{\"*deviceIds\":[\"\"],\"*joinType\":\"\",\"objType\":\"\",\"*subCriteria\":[{\"applicationHashes\":[\"\"],\"objType\":\"\",\"*pointHashes\":[\"\"]}]},\"objType\":\"\",\"*points\":[{\"ptr\":\"\"}],\"sid\":\"\",\"version\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetPointsRequest",
+		"template": "{\"locatorCriteria\":{\"applicationHashes\":[\"\"],\"objType\":\"\"},\"objType\":\"\",\"sid\":\"\",\"version\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetProtocolFeaturesRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetRoleInfoRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetRuntimeDataRequest",
+		"template": "{\"objType\":\"\",\"iid\":\"\",\"pid\":\"\",\"datatype\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetTextLogRequest",
+		"template": "{\"logTypeId\":\"\",\"*lastMessageHash\":\"null\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetTextLogListRequest",
+		"template": "{\"*lastMessageHash\":\"null\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetUsersInfoRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetUsersInfoRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "InstallADFRequest",
+		"template": "{\"objType\":\"\",\"uploadedfileId\":\"\",\"ADFfileName\":\"\",\"*SystemReset\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "InstallFirmwareRequest",
+		"template": "{\"objType\":\"\",\"uploadedfileId\":\"\",\"fileName\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "JoinEventBroadcastChannelRequest",
+		"template": "{\"eventTypes\":[\"\"],\"intervalUnit\":\"\",\"intervalValue\":30,  \"locatorCriteria\":{\"deviceIds\":[\"\"],\"objType\":\"\"},\"objType\":\"\",\"points\":[\"2861684052:ActCtrlTemp\"],\"sid\":\"\",\"version\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "LeaveEventBroadcastChannelRequest",
+		"template": "{\"eventTypes\":[\"\"],\"locatorCriteria\":{\"*deviceIds\":[\"\"],\"objType\":\"\",\"*pointNames\":[\"*\"]},\"objType\":\"\",\"*points\":[\"\"],\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ModifyApplicationConfigurationRequest",
+		"template": "{\"*locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"*deviceId\":\"1\",\"objType\":\"\",\"*pointHash\":\"\",\"*pointName\":\"\"},\"*modifications\":[{\"id\":\"\",\"objType\":\"\",\"value\":\"\"}],\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ModifyPointsRequest",
+		"template": "{\"*bLightWeightReq\":true,\"*locatorCriteria\":{\"applicationHashes\":\"\",\"applicationNames\":\"\",\"applicationTypeHashes\":\"\",\"applicationTypeNames\":\"\",\"deviceIds\":\"\",\"joinType\":\"\",\"objType\":\"\",\"pointHashes\":\"\",\"pointNames\":[\"\"],\"subCriteria\":\"\"},\"objType\":\"\",\"*points\":[{\"objType\":\"\",\"override\":\"\",\"ptr\":\"\",\"val\":\"\"}],\"version\":\"\",\"sid\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "ModifyUsersInfoRequest",
+		"template": "{\"userInfos\":[{\"userName\":\"\",\"password\":\"\",\"actualName\":\"\",\"email\":\"\",\"sms\":\"\",\"officephone\":\"\",\"isTechnician\":true,\"isNonTechnicalEndUser\":false,\"isMonitoringStaff\":false,\"isEnergyManager\":false,\"isSystemAdmin\":false,\"action\":\"\",\"description\":\"\",\"objType\":\"\"}],\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ModifyUsersInfoRequest",
+		"template": "{\"userInfos\":[{\"userName\":\"\",\"password\":\"\",\"actualName\":\"\",\"email\":\"\",\"sms\":\"\",\"officephone\":\"\",\"roles\":[{\"name\":\"\",\"selected\":false}],\"action\":\"\",\"description\":\"\",\"objType\":\"\"}],\"objType\":\"ModifyUsersInfoRequest\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "OverridePointsRequest",
+		"template": "{\"bLightWeightReq\":true,\"objType\":\"\",\"override\":{\"objType\":\"\",\"override\":\"\",\"overridetime\":\"\",\"ptr\":\"\",\"val\":\"\"},\"sid\":\"\",\"stateChangeType\":\"\",\"type\":\"\",\"version\":\"\"}",
+		"version": "3"
+	},
+	{
+		"method": "RemoveADFsRequest",
+		"template": "{\"objType\":\"\",\"adfs\":[\"\"],\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "RestoreBackupRequest",
+		"template": "{\"fileId\":\"\",\"*locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"applicationTypeHash\":\"\",\"applicationTypeName\":\"\",\"deviceId\":\"\",\"objType\":\"\",\"pointHash\":\"\",\"pointName\":\"\"},\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetPointsLogRequest",
+		"template": "{\"modifyElements\":[{\"objType\":\"\",\"locator\":{\"applicationHash\":\"\",\"pointHash\":\"\",\"objType\":\"\"},\"action\":\"\"}],\"lgiid\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetRuntimeDataRequest",
+		"template": "{\"objType\":\"\",\"iid\":\"\",\"pid\":\"\",\"status\":\"\",\"datatype\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SystemResetRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "UploadFileRequest",
+		"template": "{\"fileName\":\"\",\"objType\":\"\",\"version\":\"\",\"partData\":\"\",\"partId\":\"\",\"nextPartId\":\"\",\"totalParts\":\"\",\"totalSize\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "CommissionDeviceRequest",
+		"template": "{\"locator\":{\"applicationHash\":\"\",\"applicationName\":\"\",\"objType\":\"\"},\"devicePort\":\"\",\"deviceAddress\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetLogGroupAssocRequest",
+		"template": "{\"logGroupId\":\"\",\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "DumpDBRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"DB\":\"\",\"messageHash\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "UploadAppKCRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"messageHash\":\"\",\"applicationHash\":\"\",\"fileid\":\"\",\"filetype\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "DownloadAppKCRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"messageHash\":\"\",\"applicationHash\":\"\",\"fileid\":\"\",\"filetype\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetProtocolVersionRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetPointsMapRequest",
+		"template": "{\"objType\":\"\",\"apptype\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetParentsRequest",
+		"template": "{\"objType\":\"\",\"childreniids\":[\"\"],\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetParentListRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "DumpSerialManagerInfoRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetRestoreRequest",
+		"template": "{\"objType\":\"\",\"setToState\":true,\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SystemCleanoutRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetSerialManagerTrace",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"enable\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetDebugService",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"enable\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "InstallFSFRequest",
+		"template": "{\"objType\":\"\",\"uploadedfileId\":\"\",\"fileName\":\"\",\"*SystemReset\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "AddLicenseRequest",
+		"template": "{\"objType\":\"\",\"licensekey\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "ModifyRoleRequest",
+		"template": "{\"objType\":\"\",\"roleName\":\"\",\"rolepriviledges\":{\"alarm-trans\":false,\"alarm-ack\":false,\"alarm-mute\":false,\"alarm-reset\":false,\"app-commands\":false,\"applications\":false,\"add-del\":false,\"app-bypass\":false,\"sys-wide-sum\":false,\"app-override\":false,\"app-setpoint\":false,\"logging\":false,\"user-management\":false,\"system-values\":false},\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "RemoveRoleInfoRequest",
+		"template": "{\"objType\":\"\",\"roleName\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetCommissionInfoRequest",
+		"template": "{\"params\":[{\"id\":1,\"val\":\"\"}],\"objType\":\"\",\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "GetMaintenanceRequest",
+		"template": "{\"objType\":\"\",\"iids\":[\"\"],\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "SetMaintenanceRequest",
+		"template": "{\"objType\":\"\",\"maintenances\":[{\"iid\":\"\",\"enable\":\"\",\"mode\":\"\",\"type\":\"\",\"timeout\":300}],\"version\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	},
+	{
+		"method": "LogoutRequest",
+		"template": "{\"objType\":\"\",\"version\":\"\",\"messageHash\":\"\",\"sid\":\"\"}",
+		"version": "2"
+	}
+]
