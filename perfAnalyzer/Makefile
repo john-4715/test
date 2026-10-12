@@ -1,4 +1,6 @@
-# Makefile for perf_analyzer
+# Makefile for perf_analyzer（多文件版本）
+#
+# 源文件：main.cpp options.cpp string_utils.cpp symbol_rules.cpp dataset.cpp input_parser.cpp analyzer.cpp
 #
 # 常用命令：
 #   make                    编译（Release）
@@ -12,8 +14,12 @@
 #   make CROSS_COMPILE=aarch64-linux-gnu- LDFLAGS=-static
 
 TARGET        := perf_analyzer
-SRC           := perf_analyzer.cpp
+SRCS          := main.cpp options.cpp string_utils.cpp symbol_rules.cpp \
+                 dataset.cpp input_parser.cpp analyzer.cpp
 BUILD_DIR     := build
+OBJS          := $(addprefix $(BUILD_DIR)/,$(SRCS:.cpp=.o))
+DEBUG_OBJS    := $(addprefix $(BUILD_DIR)/debug/,$(SRCS:.cpp=.o))
+DEPS          := $(OBJS:.o=.d) $(DEBUG_OBJS:.o=.d)
 
 CROSS_COMPILE :=
 CXX           := $(CROSS_COMPILE)g++
@@ -42,17 +48,30 @@ release: $(BUILD_DIR)/$(TARGET)
 	@ln -sf $(BUILD_DIR)/$(TARGET) $(TARGET)
 	@echo "编译完成: ./$(TARGET)"
 
-$(BUILD_DIR)/$(TARGET): $(SRC) | $(BUILD_DIR)
-	$(CXX) $(CXXSTD) $(CXXFLAGS) $(WARNFLAGS) -o $@ $< $(LDFLAGS)
+# 链接
+$(BUILD_DIR)/$(TARGET): $(OBJS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
 
-debug: CXXFLAGS := -O0 -g -fsanitize=address,undefined
-debug: LDFLAGS  += -fsanitize=address,undefined
-debug: $(SRC) | $(BUILD_DIR)
-	$(CXX) $(CXXSTD) $(CXXFLAGS) $(WARNFLAGS) -o $(BUILD_DIR)/$(TARGET)_debug $< $(LDFLAGS)
+# 编译：-MMD -MP 自动生成头文件依赖，修改 .h 后只重编相关的 .cpp
+$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
+	$(CXX) $(CXXSTD) $(CXXFLAGS) $(WARNFLAGS) -MMD -MP -c -o $@ $<
+
+# 调试版本：单独的目标文件目录，不影响 release 编译结果
+DEBUG_FLAGS   := -O0 -g -fsanitize=address,undefined
+
+debug: $(BUILD_DIR)/$(TARGET)_debug
 	@echo "调试版本: $(BUILD_DIR)/$(TARGET)_debug"
 
-$(BUILD_DIR):
+$(BUILD_DIR)/$(TARGET)_debug: $(DEBUG_OBJS)
+	$(CXX) -o $@ $^ -fsanitize=address,undefined $(LDFLAGS)
+
+$(BUILD_DIR)/debug/%.o: %.cpp | $(BUILD_DIR)/debug
+	$(CXX) $(CXXSTD) $(DEBUG_FLAGS) $(WARNFLAGS) -MMD -MP -c -o $@ $<
+
+$(BUILD_DIR) $(BUILD_DIR)/debug:
 	@mkdir -p $@
+
+-include $(DEPS)
 
 # 一键生成：perf script 文本、分析报告、折叠栈和火焰图
 report: release
