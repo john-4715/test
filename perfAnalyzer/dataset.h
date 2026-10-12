@@ -1,48 +1,52 @@
-// dataset.h - 数据模型：函数名字符串池、调用栈、数据集
+// dataset.h - data model: function name string pool, call stacks, dataset
 #pragma once
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-// 函数名字符串池：把字符串映射为整数 id，减少内存和比较开销
-class Interner {
-public:
-    int id(const std::string& s);
-    const std::string& str(int i) const { return v[i]; }
-    size_t size() const { return v.size(); }
-    // 查找已有的 id，不存在返回 -1
-    int find(const std::string& s) const;
+// Function name string pool: maps strings to integer ids to reduce memory and comparison cost
+class Interner
+{
+  public:
+	int id(const std::string& s);
+	const std::string& str(int i) const { return v[i]; }
+	size_t size() const { return v.size(); }
+	// Look up an existing id; returns -1 if not found
+	int find(const std::string& s) const;
 
-private:
-    std::unordered_map<std::string, int> m;
-    std::vector<std::string> v;
+  private:
+	std::unordered_map<std::string, int> m;
+	std::vector<std::string> v;
 };
 
-// 一个调用栈样本
-struct Stack {
-    std::vector<int> f;   // 从根到叶：f[0] 为线程名，最后一个为采样点所在函数
-    std::vector<char> k;  // 对应帧是否为内核帧
-    double w = 0;         // 样本数
+// One call stack sample
+struct Stack
+{
+	std::vector<int> f;	 // root to leaf: f[0] is the thread name, the last one is the sampled function
+	std::vector<char> k; // whether the corresponding frame is a kernel frame
+	double w = 0;		 // sample count
 };
 
-// 一个解析后的栈帧
-struct Frame {
-    std::string name;
-    bool kernel;
+// One parsed stack frame
+struct Frame
+{
+	std::string name;
+	bool kernel;
 };
 
-// 解析后的完整数据集
-struct Dataset {
-    Interner names;
-    std::vector<Stack> stacks;
-    double totalSamples = 0;
-    double periodSum = 0;        // period 累加（cpu-clock 时单位为 ns）
-    std::string event;           // 采样事件名
-    bool periodIsNs = false;
-    double anomalyStripped = 0;  // 去掉栈底异常帧的样本数
-    std::string inputFormat;
+// Complete parsed dataset
+struct Dataset
+{
+	Interner names;
+	std::vector<Stack> stacks;
+	double totalSamples = 0;
+	double periodSum = 0; // accumulated period (in ns for cpu-clock)
+	std::string event;	  // sampling event name
+	bool periodIsNs = false;
+	double anomalyStripped = 0; // samples whose bottom anomaly frames were stripped
+	std::string inputFormat;
 
-    // 输出折叠栈（可直接交给 flamegraph.pl）
-    void writeFolded(const std::string& path, bool markKernel) const;
+	// Write folded stacks (can be fed directly to flamegraph.pl)
+	void writeFolded(const std::string& path, bool markKernel) const;
 };

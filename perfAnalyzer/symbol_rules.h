@@ -1,26 +1,26 @@
-// symbol_rules.h - 函数名分类规则（内核/库/业务、系统调用入口、异常帧等）
+// symbol_rules.h - function name classification rules (kernel/library/application, syscall entries, anomaly frames, etc.)
 #pragma once
 
 #include <string>
 #include <unordered_set>
 
-// 常见 libc/系统库函数名
+// Common libc/system library function names
 extern const std::unordered_set<std::string> kLibcNames;
 
-// libc 版本不匹配时常见的"不可能出现在热点里"的函数名
+// Functions that "should never be hot", commonly seen when the libc version does not match
 extern const std::unordered_set<std::string> kSuspiciousLibc;
 
-// 系统调用入口（用于判断一个样本是否处于系统调用中）
+// Syscall entry points (used to decide whether a sample is inside a syscall)
 bool isSyscallEntry(const std::string& n);
 
-// 内核函数（折叠栈没有 _[k] 标记时的启发式判断）
+// Kernel functions (heuristic when folded stacks have no _[k] marker)
 bool looksLikeKernel(const std::string& n);
 
-// 栈底异常帧：[perf-PID.map]、[JIT]、[unknown]
+// Anomaly frames at the stack bottom: [perf-PID.map], [JIT], [unknown]
 bool isRootAnomaly(const std::string& n);
 
-// 未解析帧：只有库名或 [unknown]
+// Unresolved frames: library name only or [unknown]
 bool isUnresolved(const std::string& n);
 
-// 库函数 / 运行时函数（非业务代码）
+// Library / runtime functions (not application code)
 bool isLibName(const std::string& raw);
