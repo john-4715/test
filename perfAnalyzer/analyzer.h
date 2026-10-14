@@ -1,4 +1,4 @@
-// analyzer.h - statistical analysis and report output
+// analyzer.h - 统计分析与报告输出
 #pragma once
 
 #include <map>
@@ -10,76 +10,81 @@
 #include "dataset.h"
 #include "options.h"
 
-// Result of one rule check
-struct Finding
-{
-	std::string title;
-	double weight = 0; // number of samples involved
-	std::vector<std::string> details;
-	std::string advice;
-	std::string effort; // effort required to fix
+// 一条规则检测结果
+struct Finding {
+    std::string title;
+    double weight = 0;          // 涉及样本数
+    std::vector<std::string> details;
+    std::string advice;
+    std::string effort;              // 改动难度
 };
 
-class Analyzer
-{
-  public:
-	Analyzer(Dataset& d, const Options& o) : ds(d), opt(o), N(ds.names.size()) {}
+class Analyzer {
+public:
+    Analyzer(Dataset& d, const Options& o) : ds(d), opt(o), N(ds.names.size()) {}
 
-	void run();
+    void run();
 
-  private:
-	Dataset& ds;
-	const Options& opt;
-	size_t N;
-	double W = 0;
+    // 输出地址清单：文件路径、链接地址、自身样本数、累计样本数（--addr-list）
+    bool writeAddrList(const std::string& path) const;
 
-	std::vector<double> selfW, inclW;
-	std::map<std::string, double> threadW;
-	double kernelLeafW = 0, syscallW = 0;
-	std::map<std::string, double> syscallWrapperW; // user-space syscall wrapper -> samples
-	std::vector<Finding> findings;
+private:
+    Dataset& ds;
+    const Options& opt;
+    size_t N;
+    double W = 0;
 
-	const std::string& nm(int id) const;
-	bool isApp(const Stack& s, size_t i) const;
+    std::vector<double> selfW, inclW;
+    std::map<std::string, double> threadW;
+    double kernelLeafW = 0, syscallW = 0;
+    std::map<std::string, double> syscallWrapperW;   // 用户态系统调用包装函数 -> 样本
+    std::vector<Finding> findings;
+    std::string kernelArch;                 // 由内核函数名推断的内核架构
+    std::set<int> entryIds;                 // 线程入口包装函数（多数线程栈底都出现的业务函数）
+    bool isEntry(int id) const { return entryIds.count(id) > 0; }
+    void detectEntryFrames();
 
-	// ---- Aggregation ----
-	void aggregate();
+    const std::string& nm(int id) const;
+    bool isApp(const Stack& s, size_t i) const;
 
-	// Number of samples containing any target function (each sample counted once)
-	double inclOf(const std::set<std::string>& targets, const std::string& thread = "") const;
+    // ---- 聚合 ----
+    void aggregate();
 
-	// Nearest application caller of the target functions
-	std::vector<std::pair<std::string, double>> appCallers(const std::set<std::string>& targets, size_t n = 5) const;
+    // 包含任一目标函数的样本数（每个样本只计一次）
+    double inclOf(const std::set<std::string>& targets, const std::string& thread = "") const;
 
-	// Share of the target functions in each thread
-	std::vector<std::pair<std::string, double>> byThread(const std::set<std::string>& targets) const;
+    // 目标函数最近的业务调用者
+    std::vector<std::pair<std::string, double>> appCallers(const std::set<std::string>& targets, size_t n = 5) const;
 
-	// ---- Output ----
-	void printHeader() const;
+    // 各线程中目标函数的占比
+    std::vector<std::pair<std::string, double>> byThread(const std::set<std::string>& targets) const;
 
-	void printQuality() const;
+    // ---- 输出 ----
+    void printHeader() const;
 
-	void printOverview() const;
+    void printQuality() const;
 
-	void printThreads() const;
+    void printOverview() const;
 
-	// Walk down the child with the largest inclusive share and print the thread's main call path
-	void printHotPath(const std::string& thread, double threadWeight) const;
+    void printThreads() const;
 
-	void printTopLists() const;
+    // 沿累计占比最大的子节点向下走，打印线程内的主干调用路径
+    void printHotPath(const std::string& thread, double threadWeight) const;
 
-	bool isKernelId(int id) const;
+    void printTopLists() const;
 
-	std::string kindOf(int id) const;
+    bool isKernelId(int id) const;
 
-	// ---- Rule checks ----
-	void addCallerDetails(Finding& f, const std::set<std::string>& targets) const;
+    std::string kindOf(int id) const;
 
-	bool over(double w) const;
+    // ---- 规则检测 ----
+    void addCallerDetails(Finding& f, const std::set<std::string>& targets) const;
 
-	void detect();
+    bool over(double w) const;
 
-	void printFindings() const;
+    void detect();
 
-	void printCaveats() const;
+    void printFindings() const;
+
+    void printCaveats() const;
 };

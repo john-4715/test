@@ -147,9 +147,59 @@ const unordered_set<string> kSuspiciousLibc = {
 
 bool isSyscallEntry(const string& n)
 {
-	return startsWith(n, "el0_svc") || n == "vector_swi" || n == "ret_fast_syscall" || startsWith(n, "entry_SYSCALL") ||
-		   n == "do_syscall_64" || startsWith(n, "__arm64_sys_") || startsWith(n, "__arm64_compat_sys_") ||
-		   startsWith(n, "__x64_sys_") || startsWith(n, "__ia32_sys_");
+	return startsWith(n, "el0_svc") || n == "vector_swi" || n == "ret_fast_syscall" || n == "__sys_trace" ||
+		   startsWith(n, "entry_SYSCALL") || n == "do_syscall_64" || startsWith(n, "__arm64_sys_") ||
+		   startsWith(n, "__arm64_compat_sys_") || startsWith(n, "__x64_sys_") || startsWith(n, "__ia32_sys_") ||
+		   // 32 位 ARM 等架构的内核里，系统调用实现直接命名为 sys_xxx
+		   startsWith(n, "sys_") || startsWith(n, "__se_sys_") || startsWith(n, "__do_sys_") ||
+		   startsWith(n, "compat_sys_");
+}
+
+bool isExceptionEntry(const string& n)
+{
+	static const vector<string> names = {
+		"__irq_usr",
+		"__irq_svc",
+		"__dabt_usr",
+		"__pabt_usr",
+		"__und_usr",
+		"do_DataAbort",
+		"do_PrefetchAbort",
+		"do_page_fault",
+		"__do_page_fault",
+		"do_translation_fault",
+		"gic_handle_irq",
+		"handle_IRQ",
+		"asm_do_IRQ",
+		"__handle_domain_irq",
+		"el0_irq",
+		"el0_da",
+		"el0_ia",
+		"el1_irq",
+		"el0_sync_compat_handler_da",
+		"do_mem_abort",
+		"irq_exit",
+		"__do_softirq",
+		"asm_exc_page_fault",
+		"exc_page_fault",
+		"common_interrupt",
+	};
+	for (const auto& x : names)
+		if (n == x)
+			return true;
+	return false;
+}
+
+string kernelArchHint(const string& n)
+{
+	if (startsWith(n, "el0_") || startsWith(n, "el1_") || startsWith(n, "__arm64_"))
+		return "arm64";
+	if (n == "vector_swi" || n == "ret_fast_syscall" || n == "__irq_usr" || n == "__irq_svc" || n == "__dabt_usr" ||
+		n == "__pabt_usr" || n == "ret_to_user" || n == "ret_to_user_from_irq")
+		return "arm";
+	if (startsWith(n, "entry_SYSCALL") || n == "do_syscall_64" || startsWith(n, "__x64_sys_"))
+		return "x86_64";
+	return "";
 }
 
 bool looksLikeKernel(const string& n)
@@ -275,10 +325,55 @@ bool looksLikeKernel(const string& n)
 
 bool isRootAnomaly(const string& n) { return startsWith(n, "[perf-") || startsWith(n, "[JIT") || n == "[unknown]"; }
 
-bool isUnresolved(const string& n) { return (!n.empty() && n[0] == '[') || startsWith(n, "0x"); }
+bool isAddrFrame(const string& n)
+{
+	size_t p = n.rfind("+0x");
+	return p != string::npos && p > 0 && n.find('(') == string::npos && n.find("::") == string::npos &&
+		   n.find_first_not_of("0123456789abcdefABCDEF", p + 3) == string::npos;
+}
+
+bool isSystemLibFile(const string& f)
+{
+	static const vector<string> prefixes = {
+		"libc-",
+		"libc.so",
+		"libpthread",
+		"libstdc++",
+		"libgcc_s",
+		"ld-linux",
+		"ld-",
+		"librt",
+		"libm-",
+		"libm.so",
+		"libdl",
+		"libglib",
+		"libgobject",
+		"libgio",
+		"libdbus",
+		"libz.so",
+		"libssl",
+		"libcrypto",
+		"libtdb",
+		"libjson-glib",
+		"libnss",
+		"libresolv",
+		"libuuid",
+		"libsystemd",
+		"libutil",
+	};
+	for (const auto& p : prefixes)
+		if (startsWith(f, p))
+			return true;
+	return false;
+}
+
+bool isUnresolved(const string& n) { return (!n.empty() && n[0] == '[') || startsWith(n, "0x") || isAddrFrame(n); }
 
 bool isLibName(const string& raw)
 {
+	// 地址帧：系统库的算库函数，其余（程序本身和自研库）算业务代码
+	if (isAddrFrame(raw))
+		return isSystemLibFile(raw.substr(0, raw.rfind("+0x")));
 	string n = stripVersion(raw);
 	if (n.empty())
 		return true;
@@ -291,7 +386,7 @@ bool isLibName(const string& raw)
 		startsWith(n, "void std::") || startsWith(n, "bool std::") || startsWith(n, "__cxa_"))
 		return true;
 	if (startsWith(n, "_"))
-		return true; // internal functions such as __xxx / _int_malloc / _dbus_xxx
+		return true; // __xxx / _int_malloc / _dbus_xxx 等内部函数
 	static const vector<string> libPrefixes = {
 		"dbus_",
 		"g_",

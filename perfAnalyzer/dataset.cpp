@@ -44,5 +44,5 @@ void Dataset::writeFolded(const string& path, bool markKernel) const
 	ofstream out(path);
 	for (auto& p : agg)
 		out << p.first << ' ' << llround(p.second) << '\n';
-	cerr << "Folded stacks written: " << path << " (" << agg.size() << " entries)\n";
+	cerr << "已输出折叠栈：" << path << "（" << agg.size() << " 条）\n";
 }

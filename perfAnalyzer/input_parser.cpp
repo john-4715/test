@@ -1,9 +1,12 @@
 // input_parser.cpp
 #include "input_parser.h"
+#include "elf_symbolizer.h"
 #include "string_utils.h"
 #include "symbol_rules.h"
 
 #include <cmath>
+#include <cstdlib>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -38,6 +41,14 @@ Frame InputParser::parseFrameLine(const string& line)
 {
 	string t = trim(line);
 	size_t sp = t.find_first_of(" \t");
+	uint64_t ip = 0;
+	try
+	{
+		ip = stoull(t.substr(0, sp), nullptr, 16);
+	}
+	catch (...)
+	{
+	}
 	string rest = sp == string::npos ? "" : trim(t.substr(sp + 1));
 	string dso;
 	if (!rest.empty() && rest.back() == ')')
@@ -77,7 +88,12 @@ Frame InputParser::parseFrameLine(const string& line)
 			name = "[unknown]";
 		}
 	}
-	return {name, kernel};
+	Frame fr;
+	fr.name = name;
+	fr.kernel = kernel;
+	fr.ip = ip;
+	fr.dso = dso;
+	return fr;
 }
 
 void InputParser::addStack(Dataset& ds, const string& comm, vector<Frame>& leafFirst, double w) const
@@ -114,6 +130,7 @@ bool InputParser::parsePerfScript(istream& in, Dataset& ds) const
 	string line, comm;
 	vector<Frame> frames;
 	bool inSample = false;
+	int curPid = -1;
 	double period = 0;
 	auto flush = [&]()
 	{
@@ -140,10 +157,41 @@ bool InputParser::parsePerfScript(istream& in, Dataset& ds) const
 		if (line[0] == ' ' || line[0] == '\t')
 		{
 			if (inSample)
-				frames.push_back(parseFrameLine(line));
+			{
+				Frame fr = parseFrameLine(line);
+				// perf 未解析出函数名的用户态帧：用 ELF 符号表解析
+				if (sym_ && !fr.kernel && !fr.dso.empty() && fr.dso[0] == '/' && isUnresolved(fr.name) &&
+					!startsWith(baseName(fr.dso), "perf-"))
+				{ // /tmp/perf-N.map 是 JIT 符号文件，不是 ELF
+					string resolved;
+					uint64_t vaddr = 0;
+					if (sym_->resolve(fr.ip, fr.dso, curPid, resolved))
+					{
+						fr.name = resolved;
+					}
+					else if (opt_.addrMode && sym_->toVaddr(fr.ip, fr.dso, curPid, vaddr))
+					{
+						// 地址模式：文件名+0x链接地址，之后可用 --resolve-addrs 或 addr2line 换算成函数名
+						ostringstream os;
+						os << baseName(fr.dso) << "+0x" << hex << vaddr;
+						fr.name = os.str();
+						ds.addrDso.emplace(fr.name, fr.dso);
+						ds.elf.addrFrames++;
+					}
+				}
+				frames.push_back(std::move(fr));
+			}
 			continue;
 		}
-		// Sample header: comm pid[/tid] [cpu] time: [period] event:
+		// 非样本事件（--show-mmap-events 输出的 MMAP，以及 COMM/FORK/EXIT 等）
+		if (line.find("PERF_RECORD_") != string::npos)
+		{
+			flush();
+			if (sym_)
+				sym_->parseMmapLine(line);
+			continue;
+		}
+		// 样本头：comm pid[/tid] [cpu] time: [period] event:
 		flush();
 		vector<string> tok = splitWs(line);
 		int ts = -1;
@@ -160,6 +208,12 @@ bool InputParser::parsePerfScript(istream& in, Dataset& ds) const
 			pidIdx--;
 		if (pidIdx < 0 || !isPidTok(tok[pidIdx]))
 			continue;
+		{
+			// "pid/tid" 可得到 pid；只有 tid 时 pid 未知
+			const string& pt = tok[pidIdx];
+			size_t slash = pt.find('/');
+			curPid = slash == string::npos ? -1 : atoi(pt.substr(0, slash).c_str());
+		}
 		comm.clear();
 		for (int i = 0; i < pidIdx; i++)
 		{
@@ -247,14 +301,17 @@ bool InputParser::parseFolded(istream& in, Dataset& ds) const
 				n = n.substr(0, n.size() - 4);
 			else
 				k = looksLikeKernel(n);
-			r.leafFirst.push_back({stripVersion(n), k});
+			Frame fr;
+			fr.name = stripVersion(n);
+			fr.kernel = k;
+			r.leafFirst.push_back(std::move(fr));
 		}
 		raws.push_back(std::move(r));
 	}
 	if (raws.empty())
 		return false;
 
-	// Auto-detect the count unit: newer stackcollapse versions accumulate period (nanoseconds for cpu-clock)
+	// 自动识别计数单位：stackcollapse 新版本会累加 period（cpu-clock 为纳秒）
 	double mn = 1e300;
 	for (auto& r : raws)
 		if (r.cnt > 0)
@@ -284,9 +341,9 @@ bool InputParser::parseFolded(istream& in, Dataset& ds) const
 	if (unit > 1)
 	{
 		ds.periodIsNs = true;
-		ds.event = "cpu-clock (inferred from count unit, " + numStr(unit) + " ns per sample)";
+		ds.event = "cpu-clock（由计数单位推断，每样本 " + numStr(unit) + " ns）";
 	}
-	ds.inputFormat = "folded stacks";
+	ds.inputFormat = "折叠栈";
 	return !ds.stacks.empty();
 }
 

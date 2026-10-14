@@ -41,7 +41,7 @@ string pretty(const string& name, size_t maxLen)
 		s.replace(p, 17, "const std::string");
 	if (s.size() > maxLen)
 	{
-		// Collapse template arguments nested deeper than the second level
+		// 折叠第二层以上的模板参数
 		string r;
 		int depth = 0;
 		for (char c : s)

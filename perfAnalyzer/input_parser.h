@@ -1,4 +1,4 @@
-// input_parser.h - parse perf script output and folded stacks
+// input_parser.h - 解析 perf script 输出和折叠栈
 #pragma once
 
 #include <istream>
@@ -7,15 +7,18 @@
 #include "dataset.h"
 #include "options.h"
 
+class Symbolizer;
+
 class InputParser
 {
   public:
-	explicit InputParser(const Options& opt) : opt_(opt) {}
+	// sym 不为空时，perf 未解析的用户态地址会通过 ELF 符号表解析
+	explicit InputParser(const Options& opt, Symbolizer* sym = nullptr) : opt_(opt), sym_(sym) {}
 
-	// Auto-detect the format, returns "script" or "folded"; rewinds the stream to the beginning afterwards
+	// 自动识别格式，返回 "script" 或 "folded"；读取后会把流复位到开头
 	static std::string detectFormat(std::istream& in);
 
-	// Parse using the given format; returns true if any samples were parsed
+	// 按指定格式解析，成功解析到样本返回 true
 	bool parse(std::istream& in, const std::string& format, Dataset& ds) const;
 
 	bool parsePerfScript(std::istream& in, Dataset& ds) const;
@@ -23,6 +26,7 @@ class InputParser
 
   private:
 	const Options& opt_;
+	Symbolizer* sym_;
 
 	void addStack(Dataset& ds, const std::string& comm, std::vector<Frame>& leafFirst, double w) const;
 	static Frame parseFrameLine(const std::string& line);
